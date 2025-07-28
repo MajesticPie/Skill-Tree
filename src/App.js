@@ -4,6 +4,7 @@ import Register from "./components/auth/register";
 import Header from "./components/header";
 import Home from "./components/home";
 import CreateProfile from "./components/createProfile";
+import ProfilePage from "./components/profilePage";
 
 import { AuthProvider } from "./contexts/authContext";
 import { useRoutes } from "react-router-dom";
@@ -29,6 +30,10 @@ function App() {
     {
       path: "/create-profile",
       element: <CreateProfile />,
+    },
+    {
+      path: "/:shortUrl",
+      element: <ProfilePage />,
     },
   ];
   let routesElement = useRoutes(routesArray);
