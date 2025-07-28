@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/authContext';
 import { storage, db } from '../../firebase/firebase'; 
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { collection, addDoc } from 'firebase/firestore';
+import { collection, addDoc, query, where, getDocs } from 'firebase/firestore'; // Added imports
 
 const CreateProfile = () => {
     const navigate = useNavigate();
@@ -21,11 +21,22 @@ const CreateProfile = () => {
         }
     };
 
+    // Function to check if short URL is available
+    const checkShortUrl = async () => {
+        const q = query(
+            collection(db, "profiles"),
+            where("shortUrl", "==", shortUrl)
+        );
+        const snapshot = await getDocs(q);
+        return snapshot.empty; // true if available, false if taken
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
         setError('');
 
+        // Basic validation
         if (!name || !shortUrl || !bio) {
             setError('Please fill out all fields.');
             setLoading(false);
@@ -38,10 +49,25 @@ const CreateProfile = () => {
             return;
         }
 
+        // URL validation
+        const urlPattern = /^[a-zA-Z0-9_-]+$/;
+        if (!urlPattern.test(shortUrl)) {
+            setError('Short URL can only contain letters, numbers, hyphens, and underscores.');
+            setLoading(false);
+            return;
+        }
+
         try {
+            // Check if short URL is available
+            const isAvailable = await checkShortUrl();
+            if (!isAvailable) {
+                setError('This URL is already taken. Please choose another one.');
+                setLoading(false);
+                return;
+            }
+
             let imageUrl = '';
             if (image) {
-                // Add a timestamp to the image name to ensure it's unique
                 const imageRef = ref(storage, `profiles/${currentUser.uid}/${Date.now()}_${image.name}`);
                 await uploadBytes(imageRef, image);
                 imageUrl = await getDownloadURL(imageRef);
@@ -56,12 +82,11 @@ const CreateProfile = () => {
                 createdAt: new Date()
             };
 
-            // Save to Firestore
             await addDoc(collection(db, "profiles"), profileData);
 
             setLoading(false);
             alert('Profile created successfully!');
-            navigate('/home'); // or to the new profile page
+            navigate(`/${shortUrl}`); // Navigate to the new profile
         } catch (err) {
             setError('Failed to create profile. ' + err.message);
             setLoading(false);
@@ -93,7 +118,7 @@ const CreateProfile = () => {
                         </label>
                         <div className="flex mt-1">
                             <span className="inline-flex items-center px-3 text-gray-500 bg-gray-200 border border-r-0 border-gray-300 rounded-l-md">
-                                SkilTtree.top/
+                                skilltree.top/
                             </span>
                             <input
                                 id="shortUrl"
@@ -105,6 +130,9 @@ const CreateProfile = () => {
                                 placeholder="your-unique-url"
                             />
                         </div>
+                        <p className="mt-1 text-xs text-gray-500">
+                            Only letters, numbers, hyphens, and underscores allowed
+                        </p>
                     </div>
                     <div>
                         <label htmlFor="bio" className="block text-sm font-medium text-gray-700">
