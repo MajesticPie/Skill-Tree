@@ -2,11 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { db } from '../../firebase/firebase';
 import { collection, query, where, getDocs } from 'firebase/firestore';
+import { useAuth } from '../../contexts/authContext';
 
 const ProfilePage = () => {
   const { shortUrl } = useParams();
   const navigate = useNavigate();
   const [profile, setProfile] = useState(null);
+  const { currentUser } = useAuth();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
@@ -65,9 +67,20 @@ const ProfilePage = () => {
     </div>
   );
 
+  const isOwner = currentUser && profile && currentUser.uid === profile.userId;
+
   return (
     <div className="max-w-4xl mx-auto px-4 pt-20 pb-4">
-      <div className="bg-white rounded-lg shadow-md p-6">
+      <div className="bg-white rounded-lg shadow-md p-6 relative">
+        {isOwner && (
+          <button
+            onClick={() => navigate('/edit-profile', { state: { profile } })}
+            className="absolute top-6 right-6 bg-indigo-500 text-white py-2 px-4 rounded-lg hover:bg-indigo-600 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            aria-label="Edit Profile"
+          >
+            Edit Profile
+          </button>
+        )}
         <div className="flex flex-col md:flex-row items-center gap-6">
           {profile.imageUrl && (
             <img 
