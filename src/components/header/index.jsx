@@ -9,15 +9,15 @@ const Header = () => {
     const { userLoggedIn } = useAuth()
         return (
         <nav className='flex items-center justify-between w-full z-20 fixed top-0 left-0 h-12 px-4 border-b bg-gray-200'>
-            {/* Icon on left side */}
-            <div className='flex items-center'>
+            {/* Logo and App Name Link */}
+            <Link to={userLoggedIn ? '/' : '/login'} className='flex items-center'>
                 <img 
                     src={Icon} 
-                    alt="App Icon" 
+                    alt="SkillTree logo" 
                     className='h-8 w-8 mr-2'
                 />
                 <span className='font-bold text-gray-800'>SkillTree.top</span>
-            </div>
+            </Link>
 
             {/* Auth links on right side */}
             <div>
