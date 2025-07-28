@@ -9,6 +9,20 @@ const ProfilePage = () => {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [copySuccess, setCopySuccess] = useState(false);
+
+  const handleCopyUrl = () => {
+    const url = `https://skilltree.top/${profile.shortUrl}`;
+    navigator.clipboard.writeText(url).then(
+      () => {
+        setCopySuccess(true);
+        setTimeout(() => setCopySuccess(false), 2000);
+      },
+      (err) => {
+        console.error('Could not copy URL: ', err);
+      }
+    );
+  };
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -82,8 +96,15 @@ const ProfilePage = () => {
             <div className="mt-4 text-sm text-gray-500">
               Member since {profile.createdAt?.toDate().toLocaleDateString()}
             </div>
-            <div className="mt-2 text-sm text-gray-500">
-              Profile URL: skilltree.top/{profile.shortUrl}
+            <div className="mt-2 text-sm text-gray-500 flex items-center gap-2">
+              <span>Profile URL: skilltree.top/{profile.shortUrl}</span>
+              <button
+                onClick={handleCopyUrl}
+                className="bg-indigo-100 text-indigo-700 text-xs font-semibold px-2.5 py-0.5 rounded-full hover:bg-indigo-200 transition-colors"
+                aria-label="Copy profile URL"
+              >
+                {copySuccess ? 'Copied!' : 'Copy'}
+              </button>
             </div>
           </div>
         </div>
