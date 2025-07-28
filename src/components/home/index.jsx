@@ -19,7 +19,7 @@ const Home = () => {
 
         <div className="flex flex-col space-y-4">
           <button
-            onClick={() => { /* TODO: Implement create action, e.g., navigate('/create-post') */ }}
+            onClick={() => navigate("/create-profile")}
             className="w-full px-4 py-2 font-bold text-white bg-indigo-600 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
           >
             Create
