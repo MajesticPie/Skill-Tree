@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/authContext';
-import { storage, db } from '../../firebase/firebase'; // Assuming db (firestore) and storage are exported from firebase.js
+import { storage, db } from '../../firebase/firebase'; 
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { collection, addDoc } from 'firebase/firestore';
 
@@ -93,7 +93,7 @@ const CreateProfile = () => {
                         </label>
                         <div className="flex mt-1">
                             <span className="inline-flex items-center px-3 text-gray-500 bg-gray-200 border border-r-0 border-gray-300 rounded-l-md">
-                                your-site.com/
+                                SkilTtree.top/
                             </span>
                             <input
                                 id="shortUrl"
