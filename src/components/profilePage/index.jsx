@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { db } from '../../firebase/firebase';
 import { collection, query, where, getDocs } from 'firebase/firestore';
 
 const ProfilePage = () => {
   const { shortUrl } = useParams();
+  const navigate = useNavigate();
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -38,7 +39,7 @@ const ProfilePage = () => {
   }, [shortUrl]);
 
   if (loading) return (
-    <div className="max-w-4xl mx-auto p-4">
+    <div className="max-w-4xl mx-auto px-4 pt-20 pb-4">
       <div className="animate-pulse flex space-x-4">
         <div className="rounded-full bg-gray-200 h-32 w-32"></div>
         <div className="flex-1 space-y-4 py-1">
@@ -53,11 +54,11 @@ const ProfilePage = () => {
   );
 
   if (error) return (
-    <div className="text-center py-10">
+    <div className="max-w-4xl mx-auto text-center px-4 pt-20 pb-10">
       <p className="text-red-500">{error}</p>
       <button 
         className="mt-4 px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
-        onClick={() => window.location.href = '/'}
+        onClick={() => navigate('/')}
       >
         Go Home
       </button>
@@ -65,7 +66,7 @@ const ProfilePage = () => {
   );
 
   return (
-    <div className="max-w-4xl mx-auto p-4">
+    <div className="max-w-4xl mx-auto px-4 pt-20 pb-4">
       <div className="bg-white rounded-lg shadow-md p-6">
         <div className="flex flex-col md:flex-row items-center gap-6">
           {profile.imageUrl && (
